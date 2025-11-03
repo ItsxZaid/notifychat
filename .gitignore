@@ -1,0 +1,32 @@
+# Go build artifacts
+/bin/
+/build/
+/dist/
+*.exe
+*.test
+*.out
+
+
+# Go modules cache
+vendor/
+*.sum
+
+# Local environment + secrets
+.env
+.env.*
+!.env.example
+
+# Editor + system junk
+.idea/
+.vscode/
+.DS_Store
+
+# Docker + DB data
+data/
+pgdata/
+*.db
+
+# Logs
+*.log
+logs/
+tmp/

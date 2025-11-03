@@ -24,38 +24,6 @@ func (q *Queries) CreateCampaign(ctx context.Context, name string) (Campaign, er
 	return i, err
 }
 
-const createChannel = `-- name: CreateChannel :one
-INSERT INTO channels (campaign_id, type, config, template)
-VALUES ($1, $2, $3, $4)
-RETURNING id, campaign_id, type, config, template, created_at
-`
-
-type CreateChannelParams struct {
-	CampaignID pgtype.UUID `json:"campaign_id"`
-	Type       string      `json:"type"`
-	Config     []byte      `json:"config"`
-	Template   string      `json:"template"`
-}
-
-func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (Channel, error) {
-	row := q.db.QueryRow(ctx, createChannel,
-		arg.CampaignID,
-		arg.Type,
-		arg.Config,
-		arg.Template,
-	)
-	var i Channel
-	err := row.Scan(
-		&i.ID,
-		&i.CampaignID,
-		&i.Type,
-		&i.Config,
-		&i.Template,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const getCampaign = `-- name: GetCampaign :one
 SELECT id, name, created_at FROM campaigns
 WHERE id = $1
@@ -66,36 +34,4 @@ func (q *Queries) GetCampaign(ctx context.Context, id pgtype.UUID) (Campaign, er
 	var i Campaign
 	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
-}
-
-const getChannelsByCampaignID = `-- name: GetChannelsByCampaignID :many
-SELECT id, campaign_id, type, config, template, created_at FROM channels
-WHERE campaign_id = $1
-`
-
-func (q *Queries) GetChannelsByCampaignID(ctx context.Context, campaignID pgtype.UUID) ([]Channel, error) {
-	rows, err := q.db.Query(ctx, getChannelsByCampaignID, campaignID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Channel
-	for rows.Next() {
-		var i Channel
-		if err := rows.Scan(
-			&i.ID,
-			&i.CampaignID,
-			&i.Type,
-			&i.Config,
-			&i.Template,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }

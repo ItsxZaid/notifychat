@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"solution-for-x/notifychat/cmd/app"
 	"solution-for-x/notifychat/internal/api"
+	"solution-for-x/notifychat/internal/app"
 	"solution-for-x/notifychat/internal/config"
 
 	"github.com/jackc/pgx/v5"

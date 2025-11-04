@@ -2,18 +2,18 @@ package api
 
 import (
 	"net/http"
-	"solution-for-x/notifychat/cmd/app"
+	"solution-for-x/notifychat/internal/app"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type CampaignHandler struct {
-	app *app.Application
+	*Handler
 }
 
 func NewCampaignHandler(app *app.Application) *CampaignHandler {
 	return &CampaignHandler{
-		app: app,
+		Handler: NewHandler(app),
 	}
 }
 

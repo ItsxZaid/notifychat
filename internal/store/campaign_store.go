@@ -20,7 +20,19 @@ func NewCampaignStore(pool *pgxpool.Pool) *CampaignStore {
 	}
 }
 
-func (cs *CampaignStore) GetCompaign(ctx context.Context, id string) (*domain.Campaign, error) {
+func (cs *CampaignStore) GetCampaign(ctx context.Context, id string) (*domain.Campaign, error) {
 	// Implementation here
 	return nil, nil
+}
+
+func (cs *CampaignStore) CreateCampaign(ctx context.Context, name string) (*domain.Campaign, error) {
+	if campaign, err := cs.db.CreateCampaign(ctx, name); err != nil {
+		return nil, err
+	} else {
+		return &domain.Campaign{
+			ID:        campaign.ID.String(),
+			Name:      campaign.Name,
+			CreatedAt: campaign.CreatedAt.Time,
+		}, nil
+	}
 }

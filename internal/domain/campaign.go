@@ -6,11 +6,12 @@ import (
 )
 
 type Campaign struct {
-	ID        string
-	Name      string
-	CreatedAt time.Time
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type CampaignRepository interface {
-	GetCompaign(ctx context.Context, id string) (*Campaign, error)
+	GetCampaign(ctx context.Context, id string) (*Campaign, error)
+	CreateCampaign(ctx context.Context, name string) (*Campaign, error)
 }

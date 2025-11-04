@@ -2,8 +2,8 @@ package api
 
 import (
 	"encoding/json"
+	"itsxzaid/notifychat/internal/app"
 	"net/http"
-	"solution-for-x/notifychat/internal/app"
 )
 
 type successResponse struct {

@@ -1,4 +1,4 @@
-module solution-for-x/notifychat
+module itsxzaid/notifychat
 
 go 1.25.3
 

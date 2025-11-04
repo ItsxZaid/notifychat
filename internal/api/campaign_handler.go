@@ -1,8 +1,8 @@
 package api
 
 import (
+	"itsxzaid/notifychat/internal/app"
 	"net/http"
-	"solution-for-x/notifychat/internal/app"
 
 	"github.com/go-chi/chi/v5"
 )

@@ -1,8 +1,8 @@
 package app
 
 import (
+	"itsxzaid/notifychat/internal/config"
 	"log/slog"
-	"solution-for-x/notifychat/internal/config"
 )
 
 type Application struct {

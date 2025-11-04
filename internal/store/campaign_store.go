@@ -2,8 +2,8 @@ package store
 
 import (
 	"context"
-	"solution-for-x/notifychat/internal/domain"
-	"solution-for-x/notifychat/internal/store/sqlc_generated"
+	"itsxzaid/notifychat/internal/domain"
+	"itsxzaid/notifychat/internal/store/sqlc_generated"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

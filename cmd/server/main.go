@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"itsxzaid/notifychat/internal/api"
+	"itsxzaid/notifychat/internal/app"
+	"itsxzaid/notifychat/internal/config"
 	"log/slog"
 	"net/http"
 	"os"
-	"solution-for-x/notifychat/internal/api"
-	"solution-for-x/notifychat/internal/app"
-	"solution-for-x/notifychat/internal/config"
 
 	"github.com/jackc/pgx/v5"
 )

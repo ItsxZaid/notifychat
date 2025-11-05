@@ -24,12 +24,22 @@ func (q *Queries) CreateCampaign(ctx context.Context, name string) (Campaign, er
 	return i, err
 }
 
-const getAllCampaign = `-- name: GetAllCampaign :many
+const deleteCampaign = `-- name: DeleteCampaign :exec
+DELETE FROM campaigns
+WHERE id = $1
+`
+
+func (q *Queries) DeleteCampaign(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteCampaign, id)
+	return err
+}
+
+const getAllCampaigns = `-- name: GetAllCampaigns :many
 SELECT id, name, created_at FROM campaigns
 `
 
-func (q *Queries) GetAllCampaign(ctx context.Context) ([]Campaign, error) {
-	rows, err := q.db.Query(ctx, getAllCampaign)
+func (q *Queries) GetAllCampaigns(ctx context.Context) ([]Campaign, error) {
+	rows, err := q.db.Query(ctx, getAllCampaigns)
 	if err != nil {
 		return nil, err
 	}

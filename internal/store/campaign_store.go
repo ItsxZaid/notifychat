@@ -2,9 +2,11 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"itsxzaid/notifychat/internal/domain"
 	"itsxzaid/notifychat/internal/store/sqlc_generated"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -20,9 +22,27 @@ func NewCampaignStore(pool *pgxpool.Pool) *CampaignStore {
 	}
 }
 
-func (cs *CampaignStore) GetCampaign(ctx context.Context, id string) (*domain.Campaign, error) {
-	// Implementation here
-	return nil, nil
+func (cs *CampaignStore) GetAllCampaigns(ctx context.Context) ([]domain.Campaign, error) {
+	sqlcCampaigns, err := cs.db.GetAllCampaigns(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if sqlcCampaigns == nil {
+		return []domain.Campaign{}, nil
+	}
+
+	domainCampaigns := make([]domain.Campaign, 0, len(sqlcCampaigns))
+
+	for _, sqlcCampaign := range sqlcCampaigns {
+		domainCampaigns = append(domainCampaigns, domain.Campaign{
+			ID:        sqlcCampaign.ID.String(),
+			Name:      sqlcCampaign.Name,
+			CreatedAt: sqlcCampaign.CreatedAt.Time,
+		})
+	}
+
+	return domainCampaigns, nil
 }
 
 func (cs *CampaignStore) CreateCampaign(ctx context.Context, name string) (*domain.Campaign, error) {
@@ -35,4 +55,19 @@ func (cs *CampaignStore) CreateCampaign(ctx context.Context, name string) (*doma
 			CreatedAt: campaign.CreatedAt.Time,
 		}, nil
 	}
+}
+
+func (cs *CampaignStore) DeleteCampaign(ctx context.Context, id string) error {
+	var pgUUID pgtype.UUID
+
+	if err := pgUUID.Scan(id); err != nil {
+		return domain.ErrInvalidInput
+	}
+
+	if err := cs.db.DeleteCampaign(ctx, pgUUID); err != nil {
+		fmt.Printf("%v", err)
+		return err
+	}
+
+	return nil
 }

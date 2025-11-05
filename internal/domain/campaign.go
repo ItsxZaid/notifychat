@@ -12,6 +12,7 @@ type Campaign struct {
 }
 
 type CampaignRepository interface {
-	GetCampaign(ctx context.Context, id string) (*Campaign, error)
+	GetAllCampaigns(ctx context.Context) ([]Campaign, error)
 	CreateCampaign(ctx context.Context, name string) (*Campaign, error)
+	DeleteCampaign(ctx context.Context, id string) error
 }

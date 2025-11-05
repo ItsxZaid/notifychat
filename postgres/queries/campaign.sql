@@ -7,5 +7,9 @@ RETURNING *;
 SELECT * FROM campaigns
 WHERE id = $1;
 
--- name: GetAllCampaign :many
+-- name: GetAllCampaigns :many
 SELECT * FROM campaigns;
+
+-- name: DeleteCampaign :exec
+DELETE FROM campaigns
+WHERE id = $1;

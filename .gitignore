@@ -30,3 +30,7 @@ pgdata/
 *.log
 logs/
 tmp/
+
+# Svelte
+.svelte-kit
+node_modules/

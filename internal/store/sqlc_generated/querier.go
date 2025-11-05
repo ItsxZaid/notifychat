@@ -13,6 +13,7 @@ import (
 type Querier interface {
 	CreateCampaign(ctx context.Context, name string) (Campaign, error)
 	CreateChannel(ctx context.Context, arg CreateChannelParams) (Channel, error)
+	GetAllCampaign(ctx context.Context) ([]Campaign, error)
 	GetCampaign(ctx context.Context, id pgtype.UUID) (Campaign, error)
 	GetChannelsByCampaignID(ctx context.Context, campaignID pgtype.UUID) ([]Channel, error)
 }

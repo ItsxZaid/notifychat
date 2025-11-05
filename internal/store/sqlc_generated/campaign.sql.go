@@ -24,6 +24,30 @@ func (q *Queries) CreateCampaign(ctx context.Context, name string) (Campaign, er
 	return i, err
 }
 
+const getAllCampaign = `-- name: GetAllCampaign :many
+SELECT id, name, created_at FROM campaigns
+`
+
+func (q *Queries) GetAllCampaign(ctx context.Context) ([]Campaign, error) {
+	rows, err := q.db.Query(ctx, getAllCampaign)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Campaign
+	for rows.Next() {
+		var i Campaign
+		if err := rows.Scan(&i.ID, &i.Name, &i.CreatedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getCampaign = `-- name: GetCampaign :one
 SELECT id, name, created_at FROM campaigns
 WHERE id = $1

@@ -6,3 +6,6 @@ RETURNING *;
 -- name: GetCampaign :one
 SELECT * FROM campaigns
 WHERE id = $1;
+
+-- name: GetAllCampaign :many
+SELECT * FROM campaigns;

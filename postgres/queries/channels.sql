@@ -1,8 +1,8 @@
 -- name: CreateChannel :one
-INSERT INTO channels (campaign_id, type, config, template)
+INSERT INTO channels (topic_id, type, config, template)
 VALUES ($1, $2, $3, $4)
 RETURNING *;
 
--- name: GetChannelsByCampaignID :many
+-- name: GetChannelsByTopicID :many
 SELECT * FROM channels
-WHERE campaign_id = $1;
+WHERE topic_id = $1;

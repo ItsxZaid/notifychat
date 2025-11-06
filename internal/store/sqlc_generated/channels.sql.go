@@ -12,21 +12,21 @@ import (
 )
 
 const createChannel = `-- name: CreateChannel :one
-INSERT INTO channels (campaign_id, type, config, template)
+INSERT INTO channels (topic_id, type, config, template)
 VALUES ($1, $2, $3, $4)
-RETURNING id, campaign_id, type, config, template, created_at
+RETURNING id, topic_id, type, config, template, created_at
 `
 
 type CreateChannelParams struct {
-	CampaignID pgtype.UUID `json:"campaign_id"`
-	Type       string      `json:"type"`
-	Config     []byte      `json:"config"`
-	Template   string      `json:"template"`
+	TopicID  pgtype.UUID `json:"topic_id"`
+	Type     string      `json:"type"`
+	Config   []byte      `json:"config"`
+	Template string      `json:"template"`
 }
 
 func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (Channel, error) {
 	row := q.db.QueryRow(ctx, createChannel,
-		arg.CampaignID,
+		arg.TopicID,
 		arg.Type,
 		arg.Config,
 		arg.Template,
@@ -34,7 +34,7 @@ func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (C
 	var i Channel
 	err := row.Scan(
 		&i.ID,
-		&i.CampaignID,
+		&i.TopicID,
 		&i.Type,
 		&i.Config,
 		&i.Template,
@@ -43,13 +43,13 @@ func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) (C
 	return i, err
 }
 
-const getChannelsByCampaignID = `-- name: GetChannelsByCampaignID :many
-SELECT id, campaign_id, type, config, template, created_at FROM channels
-WHERE campaign_id = $1
+const getChannelsByTopicID = `-- name: GetChannelsByTopicID :many
+SELECT id, topic_id, type, config, template, created_at FROM channels
+WHERE topic_id = $1
 `
 
-func (q *Queries) GetChannelsByCampaignID(ctx context.Context, campaignID pgtype.UUID) ([]Channel, error) {
-	rows, err := q.db.Query(ctx, getChannelsByCampaignID, campaignID)
+func (q *Queries) GetChannelsByTopicID(ctx context.Context, topicID pgtype.UUID) ([]Channel, error) {
+	rows, err := q.db.Query(ctx, getChannelsByTopicID, topicID)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (q *Queries) GetChannelsByCampaignID(ctx context.Context, campaignID pgtype
 		var i Channel
 		if err := rows.Scan(
 			&i.ID,
-			&i.CampaignID,
+			&i.TopicID,
 			&i.Type,
 			&i.Config,
 			&i.Template,

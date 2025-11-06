@@ -11,12 +11,13 @@ import (
 )
 
 type Querier interface {
-	CreateCampaign(ctx context.Context, name string) (Campaign, error)
 	CreateChannel(ctx context.Context, arg CreateChannelParams) (Channel, error)
-	DeleteCampaign(ctx context.Context, id pgtype.UUID) error
-	GetAllCampaigns(ctx context.Context) ([]Campaign, error)
-	GetCampaign(ctx context.Context, id pgtype.UUID) (Campaign, error)
-	GetChannelsByCampaignID(ctx context.Context, campaignID pgtype.UUID) ([]Channel, error)
+	CreateTopic(ctx context.Context, arg CreateTopicParams) (Topic, error)
+	DeleteTopic(ctx context.Context, id pgtype.UUID) error
+	GetAllTopics(ctx context.Context) ([]Topic, error)
+	GetChannelsByTopicID(ctx context.Context, topicID pgtype.UUID) ([]Channel, error)
+	GetTopic(ctx context.Context, id pgtype.UUID) (Topic, error)
+	UpdateTopic(ctx context.Context, arg UpdateTopicParams) (Topic, error)
 }
 
 var _ Querier = (*Queries)(nil)

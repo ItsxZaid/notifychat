@@ -8,7 +8,7 @@ import (
 )
 
 type Repository struct {
-	CampaignStore *store.CampaignStore
+	TopicStore *store.TopicStore
 }
 
 type Application struct {

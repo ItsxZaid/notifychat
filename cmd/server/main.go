@@ -59,10 +59,10 @@ func main() {
 
 	validator := validator.NewValidator()
 
-	campaignStore := store.NewCampaignStore(dbConn)
+	topicStore := store.NewTopicStore(dbConn)
 
 	repo := &app.Repository{
-		CampaignStore: campaignStore,
+		TopicStore: topicStore,
 	}
 
 	app := &app.Application{

@@ -8,17 +8,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Campaign struct {
+type Channel struct {
 	ID        pgtype.UUID        `json:"id"`
-	Name      string             `json:"name"`
+	TopicID   pgtype.UUID        `json:"topic_id"`
+	Type      string             `json:"type"`
+	Config    []byte             `json:"config"`
+	Template  string             `json:"template"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
-type Channel struct {
-	ID         pgtype.UUID        `json:"id"`
-	CampaignID pgtype.UUID        `json:"campaign_id"`
-	Type       string             `json:"type"`
-	Config     []byte             `json:"config"`
-	Template   string             `json:"template"`
-	CreatedAt  pgtype.Timestamptz `json:"created_at"`
+type Topic struct {
+	ID          pgtype.UUID        `json:"id"`
+	Name        string             `json:"name"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	Description pgtype.Text        `json:"description"`
 }

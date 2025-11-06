@@ -23,10 +23,10 @@ func SetupRouter(app *app.Application) chi.Router {
 	appRouter.Use(middleware.Recoverer)
 	appRouter.Use(loggerMiddleware(app.Logger))
 
-	campaignHandler := NewCampaignHandler(app)
+	topicHandler := NewTopicHandler(app)
 
 	appRouter.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/campaigns", campaignHandler.RegisterRoutes())
+		r.Mount("/topics", topicHandler.RegisterRoutes())
 	})
 	return appRouter
 }

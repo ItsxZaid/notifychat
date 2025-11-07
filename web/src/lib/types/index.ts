@@ -1,3 +1,4 @@
+// Topic Types
 export interface Topic {
 	id: string;
 	name: string;
@@ -7,5 +8,10 @@ export interface Topic {
 
 export interface CreateTopicPayload {
 	name: string;
+	description?: string | null;
+}
+
+export interface UpdateTopicPayload {
+	name?: string | null;
 	description?: string | null;
 }

@@ -1,4 +1,4 @@
-import type { CreateTopicPayload, Topic } from '@/types';
+import type { CreateTopicPayload, Topic, UpdateTopicPayload } from '@/types';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -19,6 +19,15 @@ export const topicApi = {
 
 	create: async (payload: CreateTopicPayload): Promise<Topic> => {
 		const response = await apiClient.post('/topics', {
+			name: payload.name,
+			description: payload.description
+		});
+
+		return response.data.data;
+	},
+
+	update: async (id: string, payload: UpdateTopicPayload): Promise<Topic> => {
+		const response = await apiClient.patch(`/topics/${id}`, {
 			name: payload.name,
 			description: payload.description
 		});

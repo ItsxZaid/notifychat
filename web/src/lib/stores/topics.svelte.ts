@@ -1,4 +1,4 @@
-import type { CreateTopicPayload, Topic } from '@/types';
+import type { CreateTopicPayload, Topic, UpdateTopicPayload } from '@/types';
 import { API } from '..';
 
 interface StateProps {
@@ -36,6 +36,25 @@ export const topicStore = {
 			topics.data.push(newTopic);
 		} catch {
 			topics.error = 'Failed to delete topic';
+		} finally {
+			topics.loading = false;
+		}
+	},
+
+	updateTopic: async (id: string, payload: UpdateTopicPayload) => {
+		try {
+			topics.loading = true;
+
+			const updatedTopic = await API.topic.update(id, payload);
+
+			const index = topics.data.findIndex((t) => t.id === updatedTopic.id);
+			if (index !== -1) {
+				topics.data[index] = { ...topics.data[index], ...updatedTopic };
+			} else {
+				topics.data.push(updatedTopic);
+			}
+		} catch {
+			topics.error = 'Failed to update topic';
 		} finally {
 			topics.loading = false;
 		}

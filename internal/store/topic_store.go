@@ -14,6 +14,7 @@ type TopicStore struct {
 	db *sqlc_generated.Queries
 }
 
+// Compile-time interface satisfaction check. Always satisfy baby
 var _ domain.TopicRepository = (*TopicStore)(nil)
 
 func NewTopicStore(pool *pgxpool.Pool) *TopicStore {

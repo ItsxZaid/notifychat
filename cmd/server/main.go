@@ -60,9 +60,11 @@ func main() {
 	validator := validator.NewValidator()
 
 	topicStore := store.NewTopicStore(dbConn)
+	channelcStore := store.NewChannelStore(dbConn)
 
 	repo := &app.Repository{
-		TopicStore: topicStore,
+		TopicStore:   topicStore,
+		ChannelStore: channelcStore,
 	}
 
 	app := &app.Application{

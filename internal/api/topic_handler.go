@@ -16,12 +16,12 @@ type TopicHandler struct {
 	*Handler
 }
 
-type CreateTopicRequest struct {
+type createTopicRequest struct {
 	Name        string  `json:"name" validate:"required,min=3,max=100"`
 	Description *string `json:"description" validate:"omitempty,min=8,max=150"`
 }
 
-type UpdateTopicRequest struct {
+type updateTopicRequest struct {
 	Name        string  `json:"name" validate:"omitempty,min=3,max=100"`
 	Description *string `json:"description" validate:"omitempty,min=8,max=150"`
 }
@@ -37,7 +37,7 @@ func (th *TopicHandler) RegisterRoutes() *chi.Mux {
 
 	router.Get("/", th.ListTopics)
 	router.Post("/", th.CreateTopic)
-	router.Patch("/{topic_id}", th.UpdateTopc)
+	router.Patch("/{topic_id}", th.UpdateTopic)
 	router.Delete("/{topic_id}", th.DeleteTopic)
 	return router
 }
@@ -58,7 +58,7 @@ func (th *TopicHandler) ListTopics(w http.ResponseWriter, r *http.Request) {
 func (th *TopicHandler) CreateTopic(w http.ResponseWriter, r *http.Request) {
 	logger := GetLogger(r.Context())
 
-	var req CreateTopicRequest
+	var req createTopicRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		logger.Error("[CreateTopic] failed to decode request body", "err", err)
 		th.Error(w, r, http.StatusBadRequest, "invalid_json", "Invalid JSON body")
@@ -94,7 +94,7 @@ func (th *TopicHandler) CreateTopic(w http.ResponseWriter, r *http.Request) {
 	th.Success(w, r, 201, topic)
 }
 
-func (th *TopicHandler) UpdateTopc(w http.ResponseWriter, r *http.Request) {
+func (th *TopicHandler) UpdateTopic(w http.ResponseWriter, r *http.Request) {
 	logger := GetLogger(r.Context())
 
 	topicID := chi.URLParam(r, "topic_id")
@@ -105,7 +105,7 @@ func (th *TopicHandler) UpdateTopc(w http.ResponseWriter, r *http.Request) {
 
 	logger.Info("topicID", "topicID", topicID)
 
-	var req UpdateTopicRequest
+	var req updateTopicRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		logger.Error("[UpdateTopic] failed to decode request body", "err", err)
 		th.Error(w, r, http.StatusBadRequest, "invalid_json", "Invalid JSON body")

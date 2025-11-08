@@ -8,7 +8,8 @@ import (
 )
 
 type Repository struct {
-	TopicStore *store.TopicStore
+	TopicStore   *store.TopicStore
+	ChannelStore *store.ChannelStore
 }
 
 type Application struct {

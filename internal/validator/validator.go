@@ -9,6 +9,18 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+type ValidationError map[string]string
+
+func (v ValidationError) Error() string {
+	errs := []string{}
+
+	for _, err := range v {
+		errs = append(errs, err)
+	}
+
+	return strings.Join(errs, ",")
+}
+
 type Validator struct {
 	validate *validator.Validate
 }
@@ -45,22 +57,30 @@ func (v *Validator) Validate(s interface{}) error {
 		return err
 	}
 
-	fieldErr := validationErrors[0]
+	errMap := make(ValidationError)
 
-	fieldName := fieldErr.Field()
+	for _, err := range validationErrors {
+		fieldName := err.Field()
 
-	switch fieldErr.Tag() {
-	case "required":
-		return fmt.Errorf("%s is required", fieldName)
-	case "min":
-		return fmt.Errorf("%s must be at least %s characters", fieldName, fieldErr.Param())
-	case "max":
-		return fmt.Errorf("%s must be no more than %s characters", fieldName, fieldErr.Param())
-	case "email":
-		return fmt.Errorf("%s must be a valid email address", fieldName)
-	case "url":
-		return fmt.Errorf("%s must be a valid URL", fieldName)
-	default:
-		return fmt.Errorf("%s is not valid (failed on %s)", fieldName, fieldErr.Tag())
+		var errDescription (string)
+
+		switch err.Tag() {
+		case "required":
+			errDescription = fmt.Errorf("%s is required", fieldName).Error()
+		case "min":
+			errDescription = fmt.Errorf("%s must be at least %s characters", fieldName, err.Param()).Error()
+		case "max":
+			errDescription = fmt.Errorf("%s must be no more than %s characters", fieldName, err.Param()).Error()
+		case "email":
+			errDescription = fmt.Errorf("%s must be a valid email address", fieldName).Error()
+		case "url":
+			errDescription = fmt.Errorf("%s must be a valid URL", fieldName).Error()
+		default:
+			errDescription = fmt.Errorf("%s is not valid (failed on %s)", fieldName, err.Tag()).Error()
+		}
+
+		errMap[fieldName] = errDescription
 	}
+
+	return errMap
 }

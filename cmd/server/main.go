@@ -7,6 +7,7 @@ import (
 	"itsxzaid/notifychat/internal/api"
 	"itsxzaid/notifychat/internal/app"
 	"itsxzaid/notifychat/internal/config"
+	"itsxzaid/notifychat/internal/service"
 	"itsxzaid/notifychat/internal/store"
 	"itsxzaid/notifychat/internal/validator"
 	"log"
@@ -59,18 +60,23 @@ func main() {
 
 	validator := validator.NewValidator()
 
+	// Stores layers
 	topicStore := store.NewTopicStore(dbConn)
-	channelcStore := store.NewChannelStore(dbConn)
+	channelStore := store.NewChannelStore(dbConn)
 
-	repo := &app.Repository{
-		TopicStore:   topicStore,
-		ChannelStore: channelcStore,
+	// Service layers
+	topicService := service.NewTopicService(topicStore)
+	channelService := service.NewChannelService(channelStore)
+
+	service := &app.Service{
+		TopicService:   topicService,
+		ChannelService: channelService,
 	}
 
 	app := &app.Application{
 		Config:    cfg,
 		Logger:    logger,
-		Repo:      repo,
+		Service:   service,
 		Validator: validator,
 	}
 

@@ -2,19 +2,19 @@ package app
 
 import (
 	"itsxzaid/notifychat/internal/config"
-	"itsxzaid/notifychat/internal/store"
+	"itsxzaid/notifychat/internal/service"
 	"itsxzaid/notifychat/internal/validator"
 	"log/slog"
 )
 
-type Repository struct {
-	TopicStore   *store.TopicStore
-	ChannelStore *store.ChannelStore
+type Service struct {
+	TopicService   *service.TopicService
+	ChannelService *service.ChannelService
 }
 
 type Application struct {
 	Config    *config.Config
 	Logger    *slog.Logger
-	Repo      *Repository
+	Service   *Service
 	Validator *validator.Validator
 }

@@ -5,11 +5,10 @@ import (
 	"errors"
 	"itsxzaid/notifychat/internal/app"
 	"itsxzaid/notifychat/internal/domain"
-	"itsxzaid/notifychat/internal/store/sqlc_generated"
+	"itsxzaid/notifychat/internal/service"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type TopicHandler struct {
@@ -22,7 +21,7 @@ type createTopicRequest struct {
 }
 
 type updateTopicRequest struct {
-	Name        string  `json:"name" validate:"omitempty,min=3,max=100"`
+	Name        *string `json:"name" validate:"omitempty,min=3,max=100"`
 	Description *string `json:"description" validate:"omitempty,min=8,max=150"`
 }
 
@@ -45,7 +44,7 @@ func (th *TopicHandler) RegisterRoutes() *chi.Mux {
 func (th *TopicHandler) ListTopics(w http.ResponseWriter, r *http.Request) {
 	logger := GetLogger(r.Context())
 
-	topics, err := th.app.Repo.TopicStore.GetAllTopics(r.Context())
+	topics, err := th.app.Service.TopicService.GetAllTopics(r.Context())
 	if err != nil {
 		logger.Error("[ListTopic] validation failed", "err", err)
 		th.Error(w, r, http.StatusUnprocessableEntity, "validation_error", err.Error())
@@ -71,18 +70,9 @@ func (th *TopicHandler) CreateTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var pgDescription pgtype.Text
-
-	if req.Description != nil {
-		pgDescription = pgtype.Text{
-			String: *req.Description,
-			Valid:  true,
-		}
-	}
-
-	topic, err := th.app.Repo.TopicStore.CreateTopic(r.Context(), sqlc_generated.CreateTopicParams{
+	topic, err := th.app.Service.TopicService.CreateTopic(r.Context(), service.CreateTopicParams{
 		Name:        req.Name,
-		Description: pgDescription,
+		Description: req.Description,
 	})
 
 	if err != nil {
@@ -118,26 +108,10 @@ func (th *TopicHandler) UpdateTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var pgDescription pgtype.Text
-
-	if req.Description != nil {
-		pgDescription = pgtype.Text{
-			String: *req.Description,
-			Valid:  true,
-		}
-	}
-
-	var pgUUID pgtype.UUID
-
-	if err := pgUUID.Scan(topicID); err != nil {
-		th.Error(w, r, http.StatusBadRequest, "invalid_id", "The topic ID is not a valid UUID")
-		return
-	}
-
-	updatedTopic, err := th.app.Repo.TopicStore.UpdateTopic(r.Context(), sqlc_generated.UpdateTopicParams{
-		ID:          pgUUID,
+	updatedTopic, err := th.app.Service.TopicService.UpdateTopic(r.Context(), service.UpdateTopicParams{
+		TopicID:     topicID,
 		Name:        req.Name,
-		Description: pgDescription,
+		Description: req.Description,
 	})
 
 	if err != nil {
@@ -160,7 +134,7 @@ func (th *TopicHandler) DeleteTopic(w http.ResponseWriter, r *http.Request) {
 
 	logger.Info("topicID", "topicID", topicID)
 
-	err := th.app.Repo.TopicStore.DeleteTopic(r.Context(), topicID)
+	err := th.app.Service.TopicService.DeleteTopic(r.Context(), topicID)
 
 	if err != nil {
 		logger.Error("[DeleteTopic] error while deleting topic", "err", err.Error())
